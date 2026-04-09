@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driva Pulse 2026.1 — Relatório Geral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-primary: #F4F6F9; --bg-secondary: #ffffff;
+        --bg-card: rgba(0,51,85,0.03);
+        --text-primary: #0D2137; --text-secondary: #4A6280;
+        --accent: #EE6F12; --accent-light: #F07F2D;
+        --accent-glow: rgba(238,111,18,0.2);
+        --navy: #003355; --navy-light: #00447a;
+        --border: #E2E8F0;
+        --green: #22c55e; --green-light: #84cc16;
+        --yellow: #eab308; --orange: #f97316; --red: #ef4444;
+        --font-display: 'Plus Jakarta Sans', 'Google Sans', system-ui, sans-serif;
+        --font-body: 'Plus Jakarta Sans', 'Google Sans', system-ui, sans-serif;
+        --title-size: clamp(1.8rem, 5vw, 3.8rem);
+        --h2-size: clamp(1.1rem, 2.8vw, 1.8rem);
+        --h3-size: clamp(0.85rem, 2vw, 1.2rem);
+        --body-size: clamp(0.65rem, 1.2vw, 0.95rem);
+        --small-size: clamp(0.55rem, 0.9vw, 0.78rem);
+        --slide-padding: clamp(1rem, 3vw, 3rem);
+        --content-gap: clamp(0.5rem, 1.5vw, 1.5rem);
+        --element-gap: clamp(0.2rem, 0.8vw, 0.6rem);
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-normal: 0.6s;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow-x: hidden; }
+    html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    .slide {
+        width: 100vw; height: 100vh; height: 100dvh;
+        overflow: hidden; scroll-snap-align: start;
+        display: flex; flex-direction: column; position: relative;
+    }
+    .slide-content {
+        flex: 1; display: flex; flex-direction: column;
+        justify-content: center; max-height: 100%; overflow: hidden;
+        padding: var(--slide-padding);
+    }
+    @media (max-height: 700px) {
+        :root {
+            --slide-padding: clamp(0.6rem, 2vw, 1.5rem);
+            --content-gap: clamp(0.3rem, 1vw, 0.8rem);
+            --title-size: clamp(1.2rem, 4vw, 2.2rem);
+            --h2-size: clamp(0.9rem, 2.5vw, 1.4rem);
+            --body-size: clamp(0.6rem, 1vw, 0.82rem);
+            --small-size: clamp(0.5rem, 0.8vw, 0.7rem);
+        }
+    }
+    @media (max-height: 600px) {
+        :root {
+            --slide-padding: clamp(0.5rem, 2vw, 1rem);
+            --content-gap: clamp(0.2rem, 0.8vw, 0.5rem);
+            --title-size: clamp(1rem, 3.5vw, 1.8rem);
+            --body-size: clamp(0.55rem, 0.9vw, 0.75rem);
+        }
+        .nav-dots { display: none; }
+    }
+    @media (max-height: 500px) {
+        :root {
+            --slide-padding: clamp(0.4rem, 1.5vw, 0.8rem);
+            --title-size: clamp(0.9rem, 3vw, 1.4rem);
+            --h2-size: clamp(0.8rem, 2vw, 1.1rem);
+            --body-size: clamp(0.5rem, 0.8vw, 0.65rem);
+        }
+    }
+    @media (max-width: 600px) { :root { --title-size: clamp(1.2rem, 7vw, 2.2rem); } }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+        html { scroll-behavior: auto; }
+    }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 700; color: var(--text-primary); }
+    /* Animations */
+    .reveal {
+        opacity: 0; transform: translateY(20px);
+        transition: opacity var(--duration-normal) var(--ease-out-expo),
+                    transform var(--duration-normal) var(--ease-out-expo);
+    }
+    .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+    .reveal:nth-child(1)  { transition-delay: 0.05s; }
+    .reveal:nth-child(2)  { transition-delay: 0.12s; }
+    .reveal:nth-child(3)  { transition-delay: 0.19s; }
+    .reveal:nth-child(4)  { transition-delay: 0.26s; }
+    .reveal:nth-child(5)  { transition-delay: 0.33s; }
+    .reveal:nth-child(6)  { transition-delay: 0.40s; }
+    .reveal:nth-child(7)  { transition-delay: 0.47s; }
+    .reveal:nth-child(8)  { transition-delay: 0.54s; }
+    .reveal:nth-child(9)  { transition-delay: 0.61s; }
+    .reveal:nth-child(10) { transition-delay: 0.68s; }
+    /* Progress + nav dots */
+    .progress-bar {
+        position: fixed; top: 0; left: 0; height: 3px;
+        background: linear-gradient(90deg, #EE6F12, #F07F2D);
+        z-index: 1000; transition: width 0.3s ease;
+        box-shadow: 0 0 12px rgba(238,111,18,0.5);
+    }
+    .nav-dots {
+        position: fixed; right: clamp(0.5rem, 1.5vw, 1.5rem);
+        top: 50%; transform: translateY(-50%);
+        display: flex; flex-direction: column; gap: 8px; z-index: 100;
+    }
+    .nav-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: rgba(0,51,85,0.2); border: none;
+        cursor: pointer; transition: all 0.3s ease; padding: 0;
+    }
+    .nav-dot.active {
+        background: #EE6F12;
+        box-shadow: 0 0 8px rgba(238,111,18,0.5); transform: scale(1.3);
+    }
+    /* Title slide — keeps dark navy for visual anchor */
+    .title-slide {
+        background:
+            radial-gradient(ellipse at 20% 80%, rgba(238,111,18,0.18) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(0,68,122,0.6) 0%, transparent 55%),
+            #003355;
+        justify-content: center; align-items: center; text-align: center;
+    }
+    .title-slide h1 {
+        font-size: var(--title-size); font-weight: 800;
+        letter-spacing: -0.03em; line-height: 1.1;
+        background: linear-gradient(135deg, #ffffff 0%, #EE6F12 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .title-slide .subtitle {
+        font-size: clamp(0.85rem, 1.8vw, 1.3rem);
+        color: rgba(255,255,255,0.6); margin-top: var(--element-gap);
+        font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .title-slide .badge {
+        display: inline-block; margin-top: var(--content-gap);
+        padding: clamp(0.3rem, 0.6vw, 0.5rem) clamp(0.8rem, 1.5vw, 1.5rem);
+        border: 1px solid rgba(238,111,18,0.5); border-radius: 100px;
+        font-size: var(--small-size); color: #F07F2D;
+        background: rgba(238,111,18,0.12); font-weight: 600;
+    }
+    .title-slide p { color: rgba(255,255,255,0.65); }
+    .nav-btn {
+        display: inline-block; padding: 0.4rem 1.2rem; border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.7); text-decoration: none; font-size: var(--small-size);
+        transition: all 0.2s; font-weight: 500;
+    }
+    .nav-btn:hover { border-color: #EE6F12; color: #F07F2D; background: rgba(238,111,18,0.15); }
+    /* Section header */
+    .section-header {
+        font-size: var(--h2-size); font-weight: 800;
+        margin-bottom: clamp(0.4rem, 1.2vh, 1rem);
+        display: flex; align-items: center; gap: clamp(0.4rem, 0.8vw, 0.8rem);
+        color: var(--navy);
+    }
+    .section-icon {
+        width: clamp(1.8rem, 3vw, 2.8rem); height: clamp(1.8rem, 3vw, 2.8rem);
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-size: clamp(0.9rem, 1.5vw, 1.4rem); flex-shrink: 0;
+    }
+    /* Chart */
+    .chart-row {
+        display: flex; align-items: center; gap: clamp(0.3rem, 0.6vw, 0.6rem);
+        margin-bottom: clamp(0.15rem, 0.4vh, 0.35rem);
+    }
+    .chart-label {
+        font-size: var(--small-size); color: var(--text-primary);
+        width: clamp(140px, 30vw, 360px); flex-shrink: 0;
+        line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        font-weight: 500;
+    }
+    .chart-bar-container {
+        flex: 1; display: flex; height: clamp(18px, 2.8vh, 28px);
+        border-radius: 4px; overflow: hidden; background: rgba(0,51,85,0.07); min-width: 0;
+    }
+    .chart-segment {
+        display: flex; align-items: center; justify-content: center;
+        font-size: clamp(0.45rem, 0.7vw, 0.65rem); font-weight: 600;
+        color: rgba(0,0,0,0.75); transition: width 0.8s var(--ease-out-expo);
+        min-width: fit-content; overflow: visible; position: relative; z-index: 1;
+    }
+    .chart-segment span { white-space: nowrap; }
+    .seg-1 { background: var(--red); }
+    .seg-2 { background: var(--orange); }
+    .seg-3 { background: var(--yellow); }
+    .seg-4 { background: var(--green-light); }
+    .seg-5 { background: var(--green); }
+    .chart-meta {
+        width: clamp(80px, 10vw, 120px); flex-shrink: 0;
+        display: flex; gap: clamp(0.3rem, 0.5vw, 0.6rem);
+        align-items: center; justify-content: flex-end;
+    }
+    .chart-avg { font-size: var(--small-size); font-weight: 700; color: var(--navy); }
+    .chart-fav {
+        font-size: var(--small-size); font-weight: 600;
+        padding: 1px clamp(4px, 0.4vw, 8px); border-radius: 4px; white-space: nowrap;
+    }
+    .fav-high { background: rgba(22,163,74,0.1);   color: #16a34a; }
+    .fav-mid  { background: rgba(161,98,7,0.1);    color: #a16207; }
+    .fav-low  { background: rgba(220,38,38,0.1);   color: #dc2626; }
+    .chart-legend {
+        display: flex; gap: clamp(0.5rem, 1vw, 1.2rem);
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.6rem);
+        font-size: var(--small-size); color: var(--text-secondary); align-items: center;
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: clamp(8px, 0.8vw, 12px); height: clamp(8px, 0.8vw, 12px); border-radius: 3px; flex-shrink: 0; }
+    /* Demographics */
+    .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+        gap: clamp(0.6rem, 1.2vw, 1.2rem); margin-top: var(--content-gap);
+    }
+    .demo-card {
+        background: #ffffff; border: 1px solid var(--border);
+        border-radius: 12px; padding: clamp(0.6rem, 1.2vw, 1.2rem);
+        box-shadow: 0 1px 4px rgba(0,51,85,0.06);
+    }
+    .demo-card h3 {
+        font-size: var(--small-size); text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--text-secondary);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.6rem); font-weight: 700;
+    }
+    .demo-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: clamp(0.15rem, 0.3vh, 0.3rem) 0; font-size: var(--body-size);
+        color: var(--text-primary);
+    }
+    .demo-item .value { font-weight: 800; font-family: var(--font-display); color: #EE6F12; }
+    .demo-bar { height: clamp(4px, 0.5vh, 6px); border-radius: 3px; background: #E2E8F0; margin-top: 2px; overflow: hidden; }
+    .demo-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #003355, #EE6F12); transition: width 1s var(--ease-out-expo); }
+    .big-number { font-size: clamp(2.5rem, 6vw, 5rem); font-family: var(--font-display); font-weight: 800; color: #EE6F12; line-height: 1; }
+    .big-label { font-size: var(--body-size); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    /* Highlights */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.8rem, 1.5vw, 1.5rem); margin-top: var(--content-gap); }
+    @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } }
+    .summary-col h3 { font-size: var(--h3-size); font-weight: 700; margin-bottom: clamp(0.3rem, 0.6vh, 0.6rem); display: flex; align-items: center; gap: 6px; color: var(--navy); }
+    .summary-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: clamp(0.25rem, 0.5vh, 0.45rem) clamp(0.4rem, 0.8vw, 0.8rem);
+        border-radius: 8px; margin-bottom: clamp(0.15rem, 0.3vh, 0.25rem);
+        font-size: var(--body-size); color: var(--text-primary);
+    }
+    .summary-item span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+    .summary-item .pct { font-weight: 800; font-family: var(--font-display); font-size: var(--h3-size); white-space: nowrap; margin-left: 10px; }
+    .strength    { background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.15); }
+    .strength    .pct { color: #16a34a; }
+    .opportunity { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.12); }
+    .opportunity .pct { color: #dc2626; }
+    /* Backgrounds */
+    .slide-bg-gradient {
+        background:
+            radial-gradient(ellipse at 5% 90%, rgba(238,111,18,0.05) 0%, transparent 40%),
+            radial-gradient(ellipse at 95% 10%, rgba(0,51,85,0.04) 0%, transparent 40%),
+            #F4F6F9;
+    }
+    .slide-bg-alt {
+        background: #ffffff;
+    }
+    .slide::before {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        background-image: linear-gradient(rgba(0,51,85,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,51,85,0.025) 1px, transparent 1px);
+        background-size: 60px 60px;
+    }
+    .slide-number { position: absolute; bottom: clamp(0.5rem, 1vh, 1rem); right: clamp(0.8rem, 1.5vw, 1.5rem); font-size: var(--small-size); color: rgba(0,51,85,0.25); font-family: var(--font-display); font-weight: 600; }
+    .content-slide .slide-content { justify-content: flex-start; padding-top: clamp(1.5rem, 4vh, 3.5rem); }
+    /* Comment slides */
+    .comment-slide .slide-content { justify-content: flex-start; padding-top: clamp(1rem, 3vh, 2.5rem); }
+    .comments-scroll { flex: 1; overflow-y: auto; min-height: 0; margin-top: clamp(0.3rem, 0.6vh, 0.5rem); padding-right: clamp(0.3rem, 0.5vw, 0.5rem); scroll-behavior: smooth; }
+    .comments-scroll::-webkit-scrollbar { width: 4px; }
+    .comments-scroll::-webkit-scrollbar-track { background: transparent; }
+    .comments-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+    .comments-scroll::-webkit-scrollbar-thumb { background: rgba(0,51,85,0.15); border-radius: 4px; }
+    .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0,51,85,0.25); }
+    .comment-item {
+        padding: clamp(0.4rem, 0.8vh, 0.7rem) clamp(0.5rem, 1vw, 0.8rem);
+        margin-bottom: clamp(0.2rem, 0.4vh, 0.35rem);
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--border);
+        border-radius: 0 8px 8px 0;
+        font-size: var(--body-size); line-height: 1.5; color: var(--text-primary);
+    }
+    .comment-item:hover { background: #FFF8F4; border-left-color: #EE6F12; border-color: rgba(238,111,18,0.2); }
+    /* Password overlay — Driva branded (dark overlay on light pages) */
+    .pw-overlay { position: fixed; inset: 0; background: rgba(0,31,60,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
+    .pw-box {
+        background: #ffffff;
+        border: 1px solid #E2E8F0; border-radius: 20px; padding: 44px 36px;
+        max-width: 420px; width: 100%; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(238,111,18,0.1);
+    }
+    .pw-logo img { height: 38px; margin-bottom: 28px; }
+    .pw-title { font-size: 1.3rem; font-weight: 800; color: #0D2137; margin-bottom: 6px; font-family: var(--font-display); }
+    .pw-sub { font-size: 0.88rem; color: #4A6280; margin-bottom: 28px; line-height: 1.6; }
+    .pw-input { width: 100%; padding: 14px 18px; background: #F4F6F9; border: 1.5px solid #E2E8F0; border-radius: 10px; font-size: 1rem; outline: none; transition: border 0.2s, box-shadow 0.2s; text-align: center; letter-spacing: 0.08em; color: #0D2137; font-family: var(--font-body); }
+    .pw-input:focus { border-color: #EE6F12; box-shadow: 0 0 0 3px rgba(238,111,18,0.12); background: #fff; }
+    .pw-input::placeholder { color: #8B9BB4; letter-spacing: 0; }
+    .pw-btn { width: 100%; margin-top: 12px; padding: 14px; background: #EE6F12; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; font-family: var(--font-display); box-shadow: 0 4px 20px rgba(238,111,18,0.35); }
+    .pw-btn:hover { background: #F07F2D; box-shadow: 0 6px 24px rgba(238,111,18,0.5); }
+    .pw-error { color: #dc2626; font-size: 0.82rem; margin-top: 10px; display: none; }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<section class="slide title-slide"><div class="slide-content" style="align-items:center;"><p class="reveal badge">1º Semestre 2026</p><h1 class="reveal" style="margin-top:var(--content-gap);">Driva Pulse</h1><p class="reveal subtitle">Resultados Gerais</p><p class="reveal" style="margin-top:var(--content-gap);font-size:var(--body-size);color:var(--text-secondary);">79 respondentes</p><div class="reveal" style="margin-top:var(--content-gap);display:flex;gap:clamp(0.4rem,0.8vw,0.8rem);flex-wrap:wrap;justify-content:center;"><a href="index.html" class="nav-btn">← Home</a></div></div><span class="slide-number">01 / 12</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="reveal" style="display:flex;align-items:baseline;gap:var(--content-gap);margin-bottom:var(--content-gap);"><span class="big-number">79</span><span class="big-label">Respondentes</span></div><div class="demo-grid"><div class="demo-card reveal"><h3>Modelo de Contratação</h3><div class="demo-item"><span>CLT</span><span class="value">29</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:37%"></div></div><div class="demo-item"><span>PJ</span><span class="value">26</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:33%"></div></div><div class="demo-item"><span>Estagiário</span><span class="value">21</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:27%"></div></div><div class="demo-item"><span>Não informou</span><span class="value">3</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:4%"></div></div></div><div class="demo-card reveal"><h3>Tempo na Empresa</h3><div class="demo-item"><span>Mais de 3 meses</span><span class="value">54</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:68%"></div></div><div class="demo-item"><span>Menos de 3 meses</span><span class="value">25</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:32%"></div></div></div><div class="demo-card reveal"><h3>Posição de Liderança</h3><div class="demo-item"><span>Não</span><span class="value">68</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:86%"></div></div><div class="demo-item"><span>Sim (Coord./Head)</span><span class="value">7</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:9%"></div></div><div class="demo-item"><span>Não informou</span><span class="value">4</span></div><div class="demo-bar"><div class="demo-bar-fill" style="width:5%"></div></div></div></div></div><span class="slide-number">02 / 12</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#6366f126;color:#6366f1;">❤️</span>Driva Pulse</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Tenho orgulho de trabalhar na Driva</span><div class="chart-bar-container" data-dist="0.0,0.0,10.1,24.1,65.8"></div><div class="chart-meta"><span class="chart-avg">4.56</span><span class="chart-fav fav-high">89.9%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Recomendaria a Driva como lugar para trabalhar</span><div class="chart-bar-container" data-dist="0.0,3.8,10.1,25.3,60.8"></div><div class="chart-meta"><span class="chart-avg">4.43</span><span class="chart-fav fav-high">86.1%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Pretendo ficar na Driva pelos próximos 12 meses</span><div class="chart-bar-container" data-dist="5.1,5.1,10.1,21.5,58.2"></div><div class="chart-meta"><span class="chart-avg">4.23</span><span class="chart-fav fav-high">79.7%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Me sinto feliz na Driva</span><div class="chart-bar-container" data-dist="0.0,2.5,15.2,30.4,51.9"></div><div class="chart-meta"><span class="chart-avg">4.32</span><span class="chart-fav fav-high">82.3%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(22,163,74,0.06);border-left:3px solid #16a34a;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#16a34a;margin-right:6px;">Ponto forte:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Sentimento de pertencimento muito forte — 84% de favorabilidade. Destaque para &quot;Tenho orgulho de trabalhar na Driva&quot; (90%). Atenção ao item &quot;Pretendo ficar na Driva pelos próximos 12 meses&quot; (80%), que tem maior potencial de melhoria.</span></div></div><span class="slide-number">03 / 12</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#8b5cf626;color:#8b5cf6;">🤖</span>AI First</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Treinamentos para tarefas com IA/automações</span><div class="chart-bar-container" data-dist="7.6,8.9,35.4,21.5,26.6"></div><div class="chart-meta"><span class="chart-avg">3.51</span><span class="chart-fav fav-low">48.1%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Liderança: incentivo para automação/IA</span><div class="chart-bar-container" data-dist="0.0,1.3,8.9,24.1,65.8"></div><div class="chart-meta"><span class="chart-avg">4.54</span><span class="chart-fav fav-high">89.9%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Liderança: facilita aprendizado sobre IA</span><div class="chart-bar-container" data-dist="1.3,10.1,8.9,31.6,48.1"></div><div class="chart-meta"><span class="chart-avg">4.15</span><span class="chart-fav fav-high">79.7%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Disponibilização de softwares/ferramentas de IA</span><div class="chart-bar-container" data-dist="0.0,5.1,13.9,29.1,51.9"></div><div class="chart-meta"><span class="chart-avg">4.28</span><span class="chart-fav fav-high">81.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Impacto da IA na minha produtividade</span><div class="chart-bar-container" data-dist="2.5,1.3,12.7,35.4,48.1"></div><div class="chart-meta"><span class="chart-avg">4.25</span><span class="chart-fav fav-high">83.5%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Adoção de IA em progresso (76%). Investimento em capacitação pode acelerar os resultados — &quot;Treinamentos para tarefas com IA/automações&quot; (48%) é o principal gap.</span></div></div><span class="slide-number">04 / 12</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#0ea5e926;color:#0ea5e9;">🤝</span>Joga Junto</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Satisfação com a quantidade de 1:1s</span><div class="chart-bar-container" data-dist="3.8,7.6,7.6,20.3,60.8"></div><div class="chart-meta"><span class="chart-avg">4.27</span><span class="chart-fav fav-high">81.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com a qualidade dos 1:1s</span><div class="chart-bar-container" data-dist="0.0,6.3,8.9,21.5,63.3"></div><div class="chart-meta"><span class="chart-avg">4.42</span><span class="chart-fav fav-high">84.8%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Tratamento igualitário (D&amp;I)</span><div class="chart-bar-container" data-dist="0.0,0.0,5.1,16.5,78.5"></div><div class="chart-meta"><span class="chart-avg">4.73</span><span class="chart-fav fav-high">94.9%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Me sinto à vontade para tirar dúvidas com colegas</span><div class="chart-bar-container" data-dist="0.0,0.0,3.8,3.8,92.4"></div><div class="chart-meta"><span class="chart-avg">4.89</span><span class="chart-fav fav-high">96.2%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Tenho os recursos/tecnologia necessários</span><div class="chart-bar-container" data-dist="0.0,0.0,6.3,17.7,75.9"></div><div class="chart-meta"><span class="chart-avg">4.70</span><span class="chart-fav fav-high">93.7%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">O ambiente favorece minha produtividade</span><div class="chart-bar-container" data-dist="0.0,0.0,6.3,29.1,64.6"></div><div class="chart-meta"><span class="chart-avg">4.58</span><span class="chart-fav fav-high">93.7%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(22,163,74,0.06);border-left:3px solid #16a34a;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#16a34a;margin-right:6px;">Ponto forte:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Ambiente colaborativo e inclusivo com 91% de favorabilidade. Colaboração, D&amp;I e recursos disponíveis são pontos fortes consolidados.</span></div></div><span class="slide-number">05 / 12</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#10b98126;color:#10b981;">🌱</span>Gente Boa e Crescimento</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Entendo os critérios para progressão de cargo</span><div class="chart-bar-container" data-dist="5.1,7.6,32.9,31.6,22.8"></div><div class="chart-meta"><span class="chart-avg">3.59</span><span class="chart-fav fav-mid">54.4%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Vejo oportunidade de crescimento na Driva</span><div class="chart-bar-container" data-dist="2.5,0.0,15.2,30.4,51.9"></div><div class="chart-meta"><span class="chart-avg">4.29</span><span class="chart-fav fav-high">82.3%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Evoluí como profissional desde que entrei</span><div class="chart-bar-container" data-dist="0.0,0.0,1.3,21.5,77.2"></div><div class="chart-meta"><span class="chart-avg">4.76</span><span class="chart-fav fav-high">98.7%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com os benefícios</span><div class="chart-bar-container" data-dist="1.3,12.7,34.2,30.4,21.5"></div><div class="chart-meta"><span class="chart-avg">3.58</span><span class="chart-fav fav-mid">51.9%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Consigo entregar tarefas no tempo previsto</span><div class="chart-bar-container" data-dist="2.5,5.1,11.4,43.0,38.0"></div><div class="chart-meta"><span class="chart-avg">4.09</span><span class="chart-fav fav-high">81.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Equilibro bem trabalho e vida pessoal</span><div class="chart-bar-container" data-dist="1.3,6.3,24.1,27.8,40.5"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-mid">68.4%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Desenvolvimento percebido positivamente no geral (73%), mas &quot;Satisfação com os benefícios&quot; (52%) indica que critérios de progressão e benefícios podem ser mais claros.</span></div></div><span class="slide-number">06 / 12</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#f59e0b26;color:#f59e0b;">💬</span>Fale a Verdade</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Confiança para expor minhas ideias</span><div class="chart-bar-container" data-dist="0.0,1.3,10.1,20.3,68.4"></div><div class="chart-meta"><span class="chart-avg">4.56</span><span class="chart-fav fav-high">88.6%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de liderar do meu líder</span><div class="chart-bar-container" data-dist="0.0,2.5,8.9,11.4,77.2"></div><div class="chart-meta"><span class="chart-avg">4.63</span><span class="chart-fav fav-high">88.6%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Comunicação da liderança direta</span><div class="chart-bar-container" data-dist="1.3,5.1,6.3,12.7,74.7"></div><div class="chart-meta"><span class="chart-avg">4.54</span><span class="chart-fav fav-high">87.3%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Visão estratégica da liderança</span><div class="chart-bar-container" data-dist="0.0,2.5,8.9,29.1,59.5"></div><div class="chart-meta"><span class="chart-avg">4.46</span><span class="chart-fav fav-high">88.6%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de motivar o time</span><div class="chart-bar-container" data-dist="3.8,2.5,7.6,21.5,64.6"></div><div class="chart-meta"><span class="chart-avg">4.41</span><span class="chart-fav fav-high">86.1%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de ensinar e guiar</span><div class="chart-bar-container" data-dist="2.5,5.1,7.6,21.5,63.3"></div><div class="chart-meta"><span class="chart-avg">4.38</span><span class="chart-fav fav-high">84.8%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Minha liderança reconhece minhas contribuições</span><div class="chart-bar-container" data-dist="0.0,1.3,7.6,22.8,68.4"></div><div class="chart-meta"><span class="chart-avg">4.58</span><span class="chart-fav fav-high">91.1%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(22,163,74,0.06);border-left:3px solid #16a34a;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#16a34a;margin-right:6px;">Ponto forte:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Alta segurança psicológica e liderança bem avaliada (88%). Comunicação aberta e confiança para expor ideias sustentam a cultura.</span></div></div><span class="slide-number">07 / 12</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#ef444426;color:#ef4444;">✍️</span>Assine Embaixo</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Sou reconhecido pelo meu trabalho</span><div class="chart-bar-container" data-dist="3.8,2.5,8.9,30.4,54.4"></div><div class="chart-meta"><span class="chart-avg">4.29</span><span class="chart-fav fav-high">84.8%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com a remuneração total</span><div class="chart-bar-container" data-dist="5.1,15.2,32.9,35.4,11.4"></div><div class="chart-meta"><span class="chart-avg">3.33</span><span class="chart-fav fav-low">46.8%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Entendo bem os produtos da Driva</span><div class="chart-bar-container" data-dist="0.0,3.8,13.9,43.0,39.2"></div><div class="chart-meta"><span class="chart-avg">4.18</span><span class="chart-fav fav-high">82.3%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Enxergo a importância das minhas atividades para o negócio</span><div class="chart-bar-container" data-dist="0.0,0.0,7.6,19.0,73.4"></div><div class="chart-meta"><span class="chart-avg">4.66</span><span class="chart-fav fav-high">92.4%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Reconhecimento moderado (77%). &quot;Satisfação com a remuneração total&quot; (47%) aponta que remuneração e valorização profissional são alavancas de melhoria.</span></div></div><span class="slide-number">08 / 12</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#f9731626;color:#f97316;">📈</span>Mova o Ponteiro</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Treinamento de onboarding</span><div class="chart-bar-container" data-dist="5.1,11.4,25.3,32.9,25.3"></div><div class="chart-meta"><span class="chart-avg">3.62</span><span class="chart-fav fav-mid">58.2%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Treinamento ongoing (tarefas diárias)</span><div class="chart-bar-container" data-dist="5.1,11.4,22.8,38.0,22.8"></div><div class="chart-meta"><span class="chart-avg">3.62</span><span class="chart-fav fav-mid">60.8%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Treinamentos que contribuem para desenvolvimento profissional</span><div class="chart-bar-container" data-dist="5.1,3.8,21.5,38.0,31.6"></div><div class="chart-meta"><span class="chart-avg">3.87</span><span class="chart-fav fav-mid">69.6%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Recebo informações sobre mudanças que impactam meu trabalho</span><div class="chart-bar-container" data-dist="3.8,12.7,21.5,22.8,39.2"></div><div class="chart-meta"><span class="chart-avg">3.81</span><span class="chart-fav fav-mid">62.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Alinhamento com o negócio presente (63%), com oportunidades de reforço. &quot;Treinamento de onboarding&quot; (58%) indica que comunicação estratégica pode ser fortalecida.</span></div></div><span class="slide-number">09 / 12</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="summary-grid"><div class="summary-col"><h3 class="reveal">✅ Maiores Favorabilidades</h3><div class="summary-item strength reveal"><span>Evoluí como profissional desde que entrei</span><span class="pct">98.7%</span></div><div class="summary-item strength reveal"><span>Me sinto à vontade para tirar dúvidas com colegas</span><span class="pct">96.2%</span></div><div class="summary-item strength reveal"><span>Tratamento igualitário (D&amp;I)</span><span class="pct">94.9%</span></div><div class="summary-item strength reveal"><span>Tenho os recursos/tecnologia necessários</span><span class="pct">93.7%</span></div><div class="summary-item strength reveal"><span>O ambiente favorece minha produtividade</span><span class="pct">93.7%</span></div></div><div class="summary-col"><h3 class="reveal">⚠️ Menores Favorabilidades</h3><div class="summary-item opportunity reveal"><span>Satisfação com a remuneração total</span><span class="pct">46.8%</span></div><div class="summary-item opportunity reveal"><span>Treinamentos para tarefas com IA/automações</span><span class="pct">48.1%</span></div><div class="summary-item opportunity reveal"><span>Satisfação com os benefícios</span><span class="pct">51.9%</span></div><div class="summary-item opportunity reveal"><span>Entendo os critérios para progressão de cargo</span><span class="pct">54.4%</span></div><div class="summary-item opportunity reveal"><span>Treinamento de onboarding</span><span class="pct">58.2%</span></div></div></div></div><span class="slide-number">10 / 12</span></section>
+<section class="slide comment-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal" style="margin-bottom:var(--content-gap);"><span class="section-icon" style="background:#22c55e26;color:#22c55e;">💚</span>O que mais gostamos na Driva</div><div class="comments-scroll reveal"><div class="comment-item" style="border-left-color:#22c55e;">Posso trabalhar além do horário quando estou animado e empolgado para adiantar projetos ou criar novos. Tenho bastante espaço para lidar com desafios e problemas com abordagens que eu elaboro.</div><div class="comment-item" style="border-left-color:#22c55e;">Cultura de execução e impacto em negócios</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente dinâmico, flexibilidade e relação de equipe.</div><div class="comment-item" style="border-left-color:#22c55e;">Abertura/incentivo a inovação e clima organizacional muito bom</div><div class="comment-item" style="border-left-color:#22c55e;">A sensação de constante crescimento alinhado com novos desafios. N existiu mais do que dois meses onde me senti estagnado, se eu estou fazendo as tarefas com mais facilidade, sempre algm enxerga esse pontecial e joga a régua de complexidade das minhas tarefas para cima, assim eu me sinto em constante evolução.</div><div class="comment-item" style="border-left-color:#22c55e;">Flexibilidade, clima</div><div class="comment-item" style="border-left-color:#22c55e;">Das pessoas</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente de trabalho, a flexibilidade e os colegas.</div><div class="comment-item" style="border-left-color:#22c55e;">Pessoas, liderança, incentivo ao uso de IA, acreditar no crescimento da empresa</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente com pessoas que inspiram e fazem o trabalho motivadas.</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente criativo e em crescimento, além de pessoas muito inteligentes.</div><div class="comment-item" style="border-left-color:#22c55e;">Da Cultura e valores da Driva.</div><div class="comment-item" style="border-left-color:#22c55e;">Da cultura, mas principalmente das pessoas que trabalham na Driva.</div><div class="comment-item" style="border-left-color:#22c55e;">A liberdade que tenho pra expor minhas ideias e realizá-las e o espaço que tenho pra crescer.</div><div class="comment-item" style="border-left-color:#22c55e;">IA first</div><div class="comment-item" style="border-left-color:#22c55e;">A autonomia e confiança que dão ao meu trabalho.</div><div class="comment-item" style="border-left-color:#22c55e;">Cultura muito forte.</div><div class="comment-item" style="border-left-color:#22c55e;">Flexibilidade de Horário, local</div><div class="comment-item" style="border-left-color:#22c55e;">Liderança, gente boa, oportunidade de crescimento</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente e pessoas muito acolhedoras. Me desenvolvi muito desde que entrei aqui e sinto ser um lugar muito confortável para se trabalhar e se desenvolver - ambos em ritmo acelerado.</div><div class="comment-item" style="border-left-color:#22c55e;">Eu aprendo muito fazendo as atividades e mesmo sendo estagiário tenho certa autonomia ao conversar com clientes atuais nossos. Gosto também da flexibilidade para os estagiários, eu por exemplo tenho 2 dias de home office após conversar com meu chefe</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente propício ao crescimento</div><div class="comment-item" style="border-left-color:#22c55e;">fazer home office nos dias que queremos</div><div class="comment-item" style="border-left-color:#22c55e;">Das oportunidades de crescimento e protagonismo.</div><div class="comment-item" style="border-left-color:#22c55e;">A liberdade. Me sinto à vontade em pensar e propor soluções e até mesmo em errar. E quando erro sinto que as correções são feitas em tom apropriado.</div><div class="comment-item" style="border-left-color:#22c55e;">sensação  de pertencer a uma equipe, e colaboração com os meus pares</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente amigável, desafios constantes, dia a dia dinâmico, incentivo de uso de IA, comunicação aberta com colegas.</div><div class="comment-item" style="border-left-color:#22c55e;">A possibilidade de interagir com as diversas áreas além da minha e o clima entre os colaboladores</div><div class="comment-item" style="border-left-color:#22c55e;">Do ambiente e das pessoas que trabalham, tendo muita gente boa em crescimento e a cultura do joga junto sendo sempre muito forte</div><div class="comment-item" style="border-left-color:#22c55e;">Aprendo muito</div><div class="comment-item" style="border-left-color:#22c55e;">O que mais me motiva na Driva é a proximidade com as lideranças e a visibilidade real de impacto. Por sermos uma empresa bootstrap, cada novo cliente e cada negócio fechado têm um peso concreto no crescimento da empresa, o que traz um senso de responsabilidade e protagonismo muito forte no dia a dia.
+
+Além disso, valorizo muito o ambiente e as pessoas. Existe uma relação de confiança e colaboração que facilita a execução e torna o trabalho mais leve, mesmo em um contexto de alta exigência.</div><div class="comment-item" style="border-left-color:#22c55e;">Principalmente do ambiente colaborativo e dinâmico, que incentiva o crescimento profissional. A troca constante de conhecimento, a abertura para novas ideias e o foco em resultado fazem com que o trabalho seja desafiador e ao mesmo tempo motivador.</div><div class="comment-item" style="border-left-color:#22c55e;">Do ambiente de trabalho e cultura da empresa sendo aplicada na prática, é bonito de ver como uma cultura forte pode construir, tanto de negócios quanto de pessoas.</div><div class="comment-item" style="border-left-color:#22c55e;">Pessoas, ambiente, IA first, colaboração e visão estratégica.</div><div class="comment-item" style="border-left-color:#22c55e;">Cultura jovem e data driven. Espaço aberto para compartilhar ideias e contão próximo com lideranças em geral.</div><div class="comment-item" style="border-left-color:#22c55e;">Gosto da horizontalidade e flexibilidade da empresa.</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente, autonomia e flexibilidade de horário</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente de crescimento e desenvolvimento em conjunto.</div><div class="comment-item" style="border-left-color:#22c55e;">A cultura da Driva é algo indescritível</div><div class="comment-item" style="border-left-color:#22c55e;">A chance de me desenvolver e de conhecer mais do mercado B2B</div><div class="comment-item" style="border-left-color:#22c55e;">Principalmente do meu time e da interação que tenho com eles. Sinto que não falta nada pra nós e rolou um entrosamento muito legal. Bastante disso é por conta da nossa liderança. Além disso, do ambiente do escritório.</div><div class="comment-item" style="border-left-color:#22c55e;">Trabalhar com pessoas talentosas, possibilidade de crescimento e poder atuar em vários temas.</div><div class="comment-item" style="border-left-color:#22c55e;">A cultura jovem e de apoio mutuo entre equipes é um diferencial.</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente muito aberto a novas ideias e formas de fazer as coisas e acesso muito fácil às pessoas</div><div class="comment-item" style="border-left-color:#22c55e;">Acredito que o espaço saudável para crescimento, é a empresa com profissionais mais talentosos que eu já trabalhei, tem muitas pessoas incríveis. Gosto muito do ambiente de trabalho e principalmente da cultura.</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente muito bom para se ter aprendizado e pessoas que são boas de trabalhar</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente de ter minha própria autonomia, exposição de ideias, feedbacks em relação as atividades feitas, um ambiente leve mas ao mesmo tempo sério</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente e pessoas</div><div class="comment-item" style="border-left-color:#22c55e;">Oportunidades diárias de aprendizado contínuo, e o ambiente saudável de trabalho.</div><div class="comment-item" style="border-left-color:#22c55e;">Gente boa em crescimento</div><div class="comment-item" style="border-left-color:#22c55e;">Pessoas em momentos em comum, com objetivos em comum. Cultura de crescimento e inovação</div><div class="comment-item" style="border-left-color:#22c55e;">Gerar impacto real no mercado brasileiro</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente é leve na medida do possível, as pessoas são legais e em grande maioria tem vontade de fazer acontecer</div><div class="comment-item" style="border-left-color:#22c55e;">Reconhecimento do trabalho e oportunidade de crescimento</div><div class="comment-item" style="border-left-color:#22c55e;">Liberdade de explorar ferramentas e novas tendências no mercado, acho que o trabalho é bem dinâmico e gosto do jeito que a diretoria incentiva a exploração e o avanço do uso das ferramentas, a decisão do Wagner de incentivar o uso do claude code e de incentivar o pessoal à um desenvolvimento mais generalista me agradou. Também acho interessante os resultados que a gente produz e os produtos finais me parecem gerar impacto para o cliente, isso ajuda na motivação.</div><div class="comment-item" style="border-left-color:#22c55e;">Possibilidade de gerir um projeto de forma quase autônoma (vetores de tech)</div><div class="comment-item" style="border-left-color:#22c55e;">Eu adoro o ambiente da Driva e de como sempre damos oportunidades para as pessoas dedicadas.</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente e as oportunidades de aprendizado</div><div class="comment-item" style="border-left-color:#22c55e;">Hoje em dia são as pessoas com quem eu trabalho, todo mundo joga muito junto e colabora pra fazer as coisas darem certo mesmo em momentos complexos.</div><div class="comment-item" style="border-left-color:#22c55e;">a liberdade e flexibilidade para ir alem das entregas cotidianas</div><div class="comment-item" style="border-left-color:#22c55e;">Capacidade de impactar diretamente no crescimento do negócio</div><div class="comment-item" style="border-left-color:#22c55e;">Acesso a diversas ferramentas e o espaço para crescer é muito grande.</div><div class="comment-item" style="border-left-color:#22c55e;">Independência na condução dos projetos</div><div class="comment-item" style="border-left-color:#22c55e;">As pessoas que realmente querem fazer acontecer, que me dão oportunidade e me botam em situações de aprendizado.</div><div class="comment-item" style="border-left-color:#22c55e;">A comunicação direta</div><div class="comment-item" style="border-left-color:#22c55e;">Gosto da possibilidade de desenvolver diferentes projetos com autonomia e liberdade, poder integrar diversas ferramentas e moldar as entregas com base no que acredito ser o melhor para o cliente estimula mais a criatividade. Além disso, abre espaço para surpreender e gerar ainda mais valor nas entregas</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente é ótimo, as pessoas são muito comunicativas e apoiam as ideias. Não pretendo sair pelo menos no próximo ano. Gosto muito daqui.</div><div class="comment-item" style="border-left-color:#22c55e;">Da colaboração entre o time e também com outras equipes para identificar boas oportunidades de projetos mais complexos e também de insights de abordagens ao longo do ciclo de vendas.</div><div class="comment-item" style="border-left-color:#22c55e;">Estar rodeado de pessoas muito boas, capacitadas e parceiras. A Driva me possibilita de fazer um trabalho duro e bem feito.</div><div class="comment-item" style="border-left-color:#22c55e;">A motivação diária de fazer as coisas darem certo. Resumidamente, estar envolvido em solução de problemas, com olhar para um futuro em que todos saem ganhando, o coladorador, a empresa e o cliente.</div><div class="comment-item" style="border-left-color:#22c55e;">Abertura das pessoas, ambiente tranquilo</div><div class="comment-item" style="border-left-color:#22c55e;">O ambiente da driva é muito bom, sinto que posso contar cm o pessoal da minha equipe, sinto realmente vontade de ficar aqui, de conversar com o pesssoal, ambiente muito colaborativo, descontraido. Muito bom</div><div class="comment-item" style="border-left-color:#22c55e;">Gosto muito do ambiente de trabalho, onde há um forte espírito de colaboração e as pessoas estão sempre dispostas a ajudar e compartilhar conhecimento. A liderança também se destaca por ser aberta a feedbacks, buscar melhorias contínuas e apoiar ativamente o desenvolvimento dos colaboradores.</div><div class="comment-item" style="border-left-color:#22c55e;">São dois fatores principais: as pessoas e a cultura de inovação, ilustrada pelo IA First. Esses dois aspectos me fazem crescer muito como profissional.</div><div class="comment-item" style="border-left-color:#22c55e;">Sentimento de Joga Junto, ambiente colabroativo</div><div class="comment-item" style="border-left-color:#22c55e;">Ambiente aberto para sugestões, constante crescimento.</div><div class="comment-item" style="border-left-color:#22c55e;">Oportunidade de crescimento, Joga Junto (time muito unido e alinhado)</div><div class="comment-item" style="border-left-color:#22c55e;">Do café gratis e do meu time</div></div></div><span class="slide-number">11 / 12</span></section>
+<section class="slide comment-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal" style="margin-bottom:var(--content-gap);"><span class="section-icon" style="background:#f9731626;color:#f97316;">🔧</span>O que pode melhorar na Driva</div><div class="comments-scroll reveal"><div class="comment-item" style="border-left-color:#f97316;">O ar condicionado é um tanto gelado.</div><div class="comment-item" style="border-left-color:#f97316;">Mais previsibilidade em investimento nas estratégias de inbound</div><div class="comment-item" style="border-left-color:#f97316;">Temos muito estagiários super qualificados na Driva, mas não recebemos Vale Alimentação, que é um beneficio muito importante para quem estuda e trabalha.</div><div class="comment-item" style="border-left-color:#f97316;">Mesmo entendendo que as pessoas responsáveis já estão focadas em trabalhar nisso e que muita coisa já melhorou desde que entrei na Driva, ainda sinto que falta estruturas no escritório, falta espaços mais dedicados para outras tarefas da empresa q vão além de escritórios, como cozinha, área dedica para lazer e descanso e afins</div><div class="comment-item" style="border-left-color:#f97316;">Talvez mais atividades esportivas além de ping pong seria bacana</div><div class="comment-item" style="border-left-color:#f97316;">Melhorar a visibilidade do colaborador em relação ao seu futuro na empresa.</div><div class="comment-item" style="border-left-color:#f97316;">Tirar a mesa de ping pong da sala de tech/cs</div><div class="comment-item" style="border-left-color:#f97316;">Acredito que faltam alguns critérios claros para algumas coisas, como expectativas claras para a promoção. Eu entendo que muitas vezes cargos novos são criados para pessoas específicas por meritocracia delas, mas ter uma visibilidade do que é possível seria um baita incentivo. Sinto que tem pessoas que morreriam e matariam pela Driva e isso é muito legal, mas não é um jeito realista de pensar, se a pessoa é muito boa e não enxerga como ela poderia crescer, ela vai procurar outro emprego. Vejo muitas pessoas na minha área que tem essa visão de &quot;para onde eu vou depois disso? Não tem cargo acima do meu&quot; pois tem uma falta de visibilidade do que pode ser feito com pessoas de alto valor para a empresa e isso é muito qualitativo, pouquíssimo mensurável.</div><div class="comment-item" style="border-left-color:#f97316;">Menos tickets</div><div class="comment-item" style="border-left-color:#f97316;">Eu ter mais conhecimento de programação/ como as ferramentas de programação funcionam</div><div class="comment-item" style="border-left-color:#f97316;">Melhoria no onboarding. Trabalhar mais nos treinamentos para que os novatos possam entender melhor as funções, ferramentas trabalhadas e suas atividades.</div><div class="comment-item" style="border-left-color:#f97316;">As mudanças estão sendo feitas, principalmente quanto a comunicação e organização. A organização de tech esta melhor, assim como a comunicação com outros times.</div><div class="comment-item" style="border-left-color:#f97316;">Mais comunicação entre produto e tech, sinto que muitas vezes chegam demandas com prazos já calculados antes de serem planejadas tecnicamente, apesar que esse aspecto tem melhorado já nos últimos tempos.</div><div class="comment-item" style="border-left-color:#f97316;">Hubspot pago</div><div class="comment-item" style="border-left-color:#f97316;">Wi Fi com uma qualidade melhor ou cabos de rede disponíveis na bancada</div><div class="comment-item" style="border-left-color:#f97316;">Flexibilização do home office.</div><div class="comment-item" style="border-left-color:#f97316;">Vale alimentação</div><div class="comment-item" style="border-left-color:#f97316;">Benefícios mais competitivos, licença de ferramentas como Claude Pro pra quem usa bastante no dia a dia</div><div class="comment-item" style="border-left-color:#f97316;">Saber que todos os projetos de IA que estamos desenvolvendo resultariam em uma menor escala de trabalho, estamos automatizando e sempre buscando eficiência em nossas funções e eu gostarai que isso resultasse em menos horas trabalhadas - visto que conseguimos o mesmo resultado com menos cansaço.</div><div class="comment-item" style="border-left-color:#f97316;">VR pra estagiário</div><div class="comment-item" style="border-left-color:#f97316;">Mais benefícios</div><div class="comment-item" style="border-left-color:#f97316;">O escritório é muito barulhento, se fosse mais silencioso ajudaria, ou se houvesse a opção de fazer 3 dias de home. Podia ter uma copa para tomar café</div><div class="comment-item" style="border-left-color:#f97316;">Mais treinamentos e cursos sobre as ferramentas (como Claude, PowerBI, 8n8,ClickUp).</div><div class="comment-item" style="border-left-color:#f97316;">Melhores especificações iniciais das demandas, o que terá disponível e o que é esperado entregar.</div><div class="comment-item" style="border-left-color:#f97316;">Melhorar a comunicação entre os colaboradores, para que todos estejam alinhados quanto às tarefas que serão realizadas e também sobre qual é a prioridade de cada tarefa (há bastante mudança de prioridade de tarefas).</div><div class="comment-item" style="border-left-color:#f97316;">Salário mais alinhado com mercado.</div><div class="comment-item" style="border-left-color:#f97316;">Maior organização e comunicação entre as áreas da empresa (vendas/produto/operação)</div><div class="comment-item" style="border-left-color:#f97316;">Ter uma comunicação entre as mudanças que ocorrem e entre as áreas de forma mais clara</div><div class="comment-item" style="border-left-color:#f97316;">Um plano de carreira bem estabelecido</div><div class="comment-item" style="border-left-color:#f97316;">Um ponto de melhoria seria o aumento de investimento nas áreas, principalmente pensando em escala. Hoje conseguimos gerar resultado com bastante eficiência, mas com mais recursos, seja em tecnologia, marketing ou estrutura comercial, seria possível potencializar ainda mais o crescimento e capturar oportunidades maiores de mercado.
+
+Por exemplo, investir mais em geração de demanda ou ferramentas de apoio ao time comercial poderia aumentar significativamente o volume e a qualidade das oportunidades, impactando diretamente as taxas de conversão e receita.</div><div class="comment-item" style="border-left-color:#f97316;">Acredito que o GTM seja uma grande dor da Driva. Vejo muito melhoria com contratações estratégicas, visão a longo prazo, e dinheiro investido. Vejo um aumento na qualidade de quantidade de leads, mas temos um bom caminho pela frente tanto para outbound quando para o inbound. 
+
+Hoje, vejo oportunidade de alinhar melhor marketing, pré-vendas e vendas em torno de uma mesma narrativa e proposta de valor, além de testar canais e abordagens de forma mais orientada a dados. Com um GTM mais bem definido, seria possível aumentar a eficiência na aquisição, reduzir ciclo de vendas e melhorar a taxa de conversão ao longo do funil.</div><div class="comment-item" style="border-left-color:#f97316;">A organização da área com a chegada de uma liderança que consiga olhar com prioridade para o plano de ação estratégico da área. Depois disso organizado, bonificação financeira,  para área de parcerias</div><div class="comment-item" style="border-left-color:#f97316;">Geração de demanda</div><div class="comment-item" style="border-left-color:#f97316;">Modelo
+Híbrido para pessoas que moram na reagiao metropolitana , podendo disponibilizar um dia a mais de home para saúde mental. Trânsito muito intenso e gastais elevados!</div><div class="comment-item" style="border-left-color:#f97316;">Senti falta de contato com as outras áreas, queria  entender melhor como cada área opera dentro da Driva para me dar um contexto mais macro do negócio</div><div class="comment-item" style="border-left-color:#f97316;">Reduzir a quantidade de projetos em paralelo para que o time consiga focar com mais profundidade, entregar mais rápido e com mais qualidade.</div><div class="comment-item" style="border-left-color:#f97316;">Acredito que um treinamento técnico inicial para estagiários na 1ª semana de trabalho seria interessante, passando por ferramentas técnicas mais utilizadas no dia a dia, para agilizar a adaptação profissional do estagiário.</div><div class="comment-item" style="border-left-color:#f97316;">O onboarding é um tanto desatualizado em relação ao HUB, muito pelo fato do HUB mudar ser atualizado constantemente</div><div class="comment-item" style="border-left-color:#f97316;">A questão das mesas e dos lugares. Se isso fosse resolvido, ficaria perfeito.</div><div class="comment-item" style="border-left-color:#f97316;">Hoje tem duas coisas que me preocupam muito na Driva:
+1. Nosso estágio de desenvolvimento de solução: Nossa entrega de produto está muito distante da ambição de crescimento. Tenho a sensação de estarmos com os mesmos problemas a muito tempo e temos metas de crescimento consideráveis e as duas coisas não estão casadas. Um produto de qualidade melhora o trabalho de todas as áreas da empresa (CS pode ser CS), vendas pode vender com mais tranquilidade, a percepção do mercado melhora.
+2. Remuneração e Seniorização dos times: nossos salários não são competitivos e contratamos muita gente júnior. Por mais que tenhamos evoluído, ainda há um gap gigante nas áreas. Também perdemos pessoas boas para outras empresas que não necessariamente pagam bem, mas já é melhor que o que oferecemos.</div><div class="comment-item" style="border-left-color:#f97316;">Melhor organização do nosso espaço físico (mesas, equipamentos espalhados - sem local de armazenar corretamente, falta de manutenção e bagunça em cozinhas e banheiros). Inclusive regras mais rígidas para o bem estar coletivo.</div><div class="comment-item" style="border-left-color:#f97316;">Comunicação mais centralizada para mudanças de infra, principalmente</div><div class="comment-item" style="border-left-color:#f97316;">Definição de carreira, gostaria que as pessoas se sentisse mais seguras em relação aos próximos passos que elas podem traçar aqui dentro. É muito difícil perder gente talentosa por não caber mais dentro da empresa. Além disso, acredito que deveríamos fazer mais momento de descontração entre a liderança, sinto uma liderança dividida em grupos e não Jogando Junto.</div><div class="comment-item" style="border-left-color:#f97316;">Uma implementação de um onboarding voltado para a segurança da informação</div><div class="comment-item" style="border-left-color:#f97316;">Não é significativo pq eu fico no hibrido, mas quando estou presencial, dependendo do horario, não tem nem lugar na sala de tech, então ter um ambiente maior (ou talvez já aproveitar os andares que tem para além de salas de reuniao)</div><div class="comment-item" style="border-left-color:#f97316;">Padronização das estações de trabalho do escritório, pra quem trabalha de forma híbrida, talvez usar um app de locação de estações, e garantir que sempre tenha um teclado, um mouse, um hub usb e hdmi para facilitar, e um suporte de notebook em cada estação.</div><div class="comment-item" style="border-left-color:#f97316;">Mais espaço físico</div><div class="comment-item" style="border-left-color:#f97316;">Laptop melhor</div><div class="comment-item" style="border-left-color:#f97316;">Focar mais em estabilização de ferramentas e menos em novas features que ainda não foram homologadas como deveriaml</div><div class="comment-item" style="border-left-color:#f97316;">Maior reflexão sobre como o seu trabalho individual afeta outras pessoas e consequentemente, um zelo maior pelas entregas. Pra mim isso está atrelado com afalta de preparo da liderança em conduzir o dia a dia das equipes.</div><div class="comment-item" style="border-left-color:#f97316;">Seguir avançando na automação dos processos internos, buscando otimizar o dia a dia das áreas, reduzir atividades manuais e ganhar mais eficiência operacional.</div><div class="comment-item" style="border-left-color:#f97316;">Acho que ter alguns processos mais bem definidos (mas importante que não se tornem muito engessados principalmente se acabarem tirando liberdade e atrasando o desenvolvimento das coisas) e talvez ter mais opções de benefício.</div><div class="comment-item" style="border-left-color:#f97316;">Plano de carreira estruturado.</div><div class="comment-item" style="border-left-color:#f97316;">Melhoria na comunicação entre os times e estruturação de uma jornada do cliente atrelada ao produto.</div><div class="comment-item" style="border-left-color:#f97316;">Não me vem nada à mente</div><div class="comment-item" style="border-left-color:#f97316;">Algum espaço para descanso na sala de Tech/CS, as vezes queremos conversar ou apenas descansar após almoço e não temos um espacinho pra isso.</div><div class="comment-item" style="border-left-color:#f97316;">mais espaço, acho que ter um canto &quot;seu&quot; (mesmo que compartilhado com outros colaboradores em horarios distintos) ajuda a criar uma conexão com o presencial/escritório</div><div class="comment-item" style="border-left-color:#f97316;">Focar mais na qualidade do que na velocidade de entrega das tasks, especialmente envolvendo AI</div><div class="comment-item" style="border-left-color:#f97316;">Melhoria na plataforma, que está muito instável.</div><div class="comment-item" style="border-left-color:#f97316;">Opções mais saudáveis durante os encontros mensais, atualmente tem muita opção de pizza bolo hotdog etc, poderia ser algo simples com pouca gordura por ex., antigamente tinha churrasco que dá pra comer relativamente saudável. Nesse mesmo ponto a mesa de ping-pong foi uma boa, quando chegar a maior vai ser melhor ainda.</div><div class="comment-item" style="border-left-color:#f97316;">Mais espaço na sala de tech</div><div class="comment-item" style="border-left-color:#f97316;">Acho que melhorar a organização entre lugares volantes e fixos pode ajudar bastante no dia a dia, hoje percebo que a definição dos lugares fixos nem sempre é respeitada, o que acaba gerando certa desorganização. Talvez fizesse sentido ampliar a quantidade de lugares fixos, inclusive para quem vem ao escritório apenas 3 vezes por semana, já que ter um espaço definido facilita deixar alguns itens no local e torna a rotina mais prática</div><div class="comment-item" style="border-left-color:#f97316;">Temos muitas reuniões. O joga junto semanal é desnecessário, na minha opinião. A gente sabe de updates das áreas, mas não sabe a estratégia deles. Por que eu vou querer saber que a sprint de produto atrasou se eu não sei o que eles buscavam com aquilo? Ou ainda, eu não sei como ajudar.</div><div class="comment-item" style="border-left-color:#f97316;">A mudança no site trazendo os diferenciais que temos em cada segmento de forma bem específica, traria muita idoneidade pra Driva, consequentemente, aumentando a conversão nas vendas.</div><div class="comment-item" style="border-left-color:#f97316;">Mais competições que de fato promovam a interação entre o pessoal (como a torneio de ping pong). Ter esse campeonato com mais frequência por exemplo.</div><div class="comment-item" style="border-left-color:#f97316;">Organizar a priorização das demandas. Sinto que não estamos focando nos problemas mais latentes do nosso produto, de forma que honera tempo e desgaste dos funcionários de vários times por conta da falta de visibilidade e organização do que é necessário ser feito para melhorar tanto a experiência dos nossos clientes mas também dos colaboradores.</div><div class="comment-item" style="border-left-color:#f97316;">Isolamento acústico, às vezes muitas pessoas falam ao mesmo tempo e é difícil ficar sem fone com cancelamento de ruído.</div><div class="comment-item" style="border-left-color:#f97316;">A comunicação entre as equipes de produto/tech &lt;&gt; cs é oq mais atrapalha nosso dia a dia por aqui. Hoje, oque eu mais gosto de fazer no meu trabalho passar melhorias pra produto, identificar pontos de falha, e eu não em sinto ouvida mais. Mudanças são feitas sem comunicado e coisas fora do foco são priorizadas.
+Eu gostaria muito que tivéssemos um processo claro, de escuta ativa com a equipe de CS, onde nossas sugestões sejam realmente levadas em consideração</div><div class="comment-item" style="border-left-color:#f97316;">Uma mudança que poderia tornar o trabalho ainda melhor seria evoluir na organização de prioridades e no gerenciamento de demandas urgentes. Em alguns momentos, acabam surgindo muitas demandas ao mesmo tempo, o que pode impactar o equilíbrio entre vida profissional e pessoal. Acredito que, com uma melhor priorização e definição de urgências, seria possível manter a produtividade sem comprometer esse equilíbrio.</div><div class="comment-item" style="border-left-color:#f97316;">Mais oportunidades de trocas diretas com os diretores.</div><div class="comment-item" style="border-left-color:#f97316;">Uso de algumas ferramentas pagas e maior comunicação entre áreas</div><div class="comment-item" style="border-left-color:#f97316;">Maior relação com os colegas de trabalho de diferentes vetores/áreas.</div><div class="comment-item" style="border-left-color:#f97316;">Queria um fone, mouse e teclado sem fio, só o mouse e o fone sem fio ja seriam suficientes na real</div></div></div><span class="slide-number">12 / 12</span></section>
+<script>
+    class SlidePresentation {
+        constructor() {
+            this.slides = document.querySelectorAll('.slide');
+            this.currentSlide = 0;
+            this.setupIntersectionObserver();
+            this.setupKeyboardNav();
+            this.setupTouchNav();
+            this.setupProgressBar();
+            this.setupNavDots();
+            this.renderCharts();
+        }
+        setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        this.currentSlide = Array.from(this.slides).indexOf(entry.target);
+                        this.updateProgressBar();
+                        this.updateNavDots();
+                    }
+                });
+            }, { threshold: 0.4 });
+            this.slides.forEach(s => observer.observe(s));
+        }
+        setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                const inScroll = e.target.closest('.comments-scroll');
+                if (inScroll && ['ArrowDown','ArrowUp','Space'].includes(e.code)) return;
+                if (['ArrowDown','ArrowRight','Space','PageDown'].includes(e.code)) {
+                    e.preventDefault();
+                    this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                } else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.code)) {
+                    e.preventDefault();
+                    this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                }
+            });
+        }
+        setupTouchNav() {
+            let startY = 0;
+            document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+            document.addEventListener('touchend', e => {
+                const dy = startY - e.changedTouches[0].clientY;
+                if (e.target.closest('.comments-scroll')) return;
+                if (Math.abs(dy) > 50) {
+                    if (dy > 0) this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                    else this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                }
+            }, { passive: true });
+        }
+        setupProgressBar() {
+            this.progressBar = document.getElementById('progressBar');
+            this.updateProgressBar();
+        }
+        updateProgressBar() {
+            if (this.progressBar)
+                this.progressBar.style.width = ((this.currentSlide + 1) / this.slides.length * 100) + '%';
+        }
+        setupNavDots() {
+            const nav = document.getElementById('navDots');
+            if (!nav) return;
+            this.slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Slide ' + (i+1));
+                dot.addEventListener('click', () => this.goToSlide(i));
+                nav.appendChild(dot);
+            });
+            this.dots = nav.querySelectorAll('.nav-dot');
+        }
+        updateNavDots() {
+            if (this.dots)
+                this.dots.forEach((d, i) => d.classList.toggle('active', i === this.currentSlide));
+        }
+        goToSlide(idx) { this.slides[idx].scrollIntoView({ behavior: 'smooth' }); }
+        renderCharts() {
+            document.querySelectorAll('.chart-bar-container').forEach(container => {
+                const dist = container.dataset.dist;
+                if (!dist) return;
+                const vals = dist.split(',').map(Number);
+                const colors = ['seg-1','seg-2','seg-3','seg-4','seg-5'];
+                vals.forEach((pct, i) => {
+                    if (pct > 0) {
+                        const seg = document.createElement('div');
+                        seg.className = 'chart-segment ' + colors[i];
+                        seg.style.width = pct + '%';
+                        if (pct > 0) seg.innerHTML = '<span>' + Math.round(pct) + '%</span>';
+                        container.appendChild(seg);
+                    }
+                });
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.chart-segment').forEach(seg => {
+                    const w = seg.style.width;
+                    seg.style.width = '0%';
+                    requestAnimationFrame(() => { requestAnimationFrame(() => { seg.style.width = w; }); });
+                });
+            }, 100);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+    document.querySelectorAll('.comments-scroll').forEach(el => {
+        el.addEventListener('wheel', e => {
+            const atTop = el.scrollTop === 0;
+            const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+            if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) return;
+            e.stopPropagation();
+        }, { passive: false });
+    });
+</script>
+</body>
+</html>

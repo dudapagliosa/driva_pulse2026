@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Driva Pulse 2026.1 — Administrativo Financeiro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-primary: #F4F6F9; --bg-secondary: #ffffff;
+        --bg-card: rgba(0,51,85,0.03);
+        --text-primary: #0D2137; --text-secondary: #4A6280;
+        --accent: #EE6F12; --accent-light: #F07F2D;
+        --accent-glow: rgba(238,111,18,0.2);
+        --navy: #003355; --navy-light: #00447a;
+        --border: #E2E8F0;
+        --green: #22c55e; --green-light: #84cc16;
+        --yellow: #eab308; --orange: #f97316; --red: #ef4444;
+        --font-display: 'Plus Jakarta Sans', 'Google Sans', system-ui, sans-serif;
+        --font-body: 'Plus Jakarta Sans', 'Google Sans', system-ui, sans-serif;
+        --title-size: clamp(1.8rem, 5vw, 3.8rem);
+        --h2-size: clamp(1.1rem, 2.8vw, 1.8rem);
+        --h3-size: clamp(0.85rem, 2vw, 1.2rem);
+        --body-size: clamp(0.65rem, 1.2vw, 0.95rem);
+        --small-size: clamp(0.55rem, 0.9vw, 0.78rem);
+        --slide-padding: clamp(1rem, 3vw, 3rem);
+        --content-gap: clamp(0.5rem, 1.5vw, 1.5rem);
+        --element-gap: clamp(0.2rem, 0.8vw, 0.6rem);
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --duration-normal: 0.6s;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow-x: hidden; }
+    html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    .slide {
+        width: 100vw; height: 100vh; height: 100dvh;
+        overflow: hidden; scroll-snap-align: start;
+        display: flex; flex-direction: column; position: relative;
+    }
+    .slide-content {
+        flex: 1; display: flex; flex-direction: column;
+        justify-content: center; max-height: 100%; overflow: hidden;
+        padding: var(--slide-padding);
+    }
+    @media (max-height: 700px) {
+        :root {
+            --slide-padding: clamp(0.6rem, 2vw, 1.5rem);
+            --content-gap: clamp(0.3rem, 1vw, 0.8rem);
+            --title-size: clamp(1.2rem, 4vw, 2.2rem);
+            --h2-size: clamp(0.9rem, 2.5vw, 1.4rem);
+            --body-size: clamp(0.6rem, 1vw, 0.82rem);
+            --small-size: clamp(0.5rem, 0.8vw, 0.7rem);
+        }
+    }
+    @media (max-height: 600px) {
+        :root {
+            --slide-padding: clamp(0.5rem, 2vw, 1rem);
+            --content-gap: clamp(0.2rem, 0.8vw, 0.5rem);
+            --title-size: clamp(1rem, 3.5vw, 1.8rem);
+            --body-size: clamp(0.55rem, 0.9vw, 0.75rem);
+        }
+        .nav-dots { display: none; }
+    }
+    @media (max-height: 500px) {
+        :root {
+            --slide-padding: clamp(0.4rem, 1.5vw, 0.8rem);
+            --title-size: clamp(0.9rem, 3vw, 1.4rem);
+            --h2-size: clamp(0.8rem, 2vw, 1.1rem);
+            --body-size: clamp(0.5rem, 0.8vw, 0.65rem);
+        }
+    }
+    @media (max-width: 600px) { :root { --title-size: clamp(1.2rem, 7vw, 2.2rem); } }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+        html { scroll-behavior: auto; }
+    }
+    body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 700; color: var(--text-primary); }
+    /* Animations */
+    .reveal {
+        opacity: 0; transform: translateY(20px);
+        transition: opacity var(--duration-normal) var(--ease-out-expo),
+                    transform var(--duration-normal) var(--ease-out-expo);
+    }
+    .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+    .reveal:nth-child(1)  { transition-delay: 0.05s; }
+    .reveal:nth-child(2)  { transition-delay: 0.12s; }
+    .reveal:nth-child(3)  { transition-delay: 0.19s; }
+    .reveal:nth-child(4)  { transition-delay: 0.26s; }
+    .reveal:nth-child(5)  { transition-delay: 0.33s; }
+    .reveal:nth-child(6)  { transition-delay: 0.40s; }
+    .reveal:nth-child(7)  { transition-delay: 0.47s; }
+    .reveal:nth-child(8)  { transition-delay: 0.54s; }
+    .reveal:nth-child(9)  { transition-delay: 0.61s; }
+    .reveal:nth-child(10) { transition-delay: 0.68s; }
+    /* Progress + nav dots */
+    .progress-bar {
+        position: fixed; top: 0; left: 0; height: 3px;
+        background: linear-gradient(90deg, #EE6F12, #F07F2D);
+        z-index: 1000; transition: width 0.3s ease;
+        box-shadow: 0 0 12px rgba(238,111,18,0.5);
+    }
+    .nav-dots {
+        position: fixed; right: clamp(0.5rem, 1.5vw, 1.5rem);
+        top: 50%; transform: translateY(-50%);
+        display: flex; flex-direction: column; gap: 8px; z-index: 100;
+    }
+    .nav-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: rgba(0,51,85,0.2); border: none;
+        cursor: pointer; transition: all 0.3s ease; padding: 0;
+    }
+    .nav-dot.active {
+        background: #EE6F12;
+        box-shadow: 0 0 8px rgba(238,111,18,0.5); transform: scale(1.3);
+    }
+    /* Title slide — keeps dark navy for visual anchor */
+    .title-slide {
+        background:
+            radial-gradient(ellipse at 20% 80%, rgba(238,111,18,0.18) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(0,68,122,0.6) 0%, transparent 55%),
+            #003355;
+        justify-content: center; align-items: center; text-align: center;
+    }
+    .title-slide h1 {
+        font-size: var(--title-size); font-weight: 800;
+        letter-spacing: -0.03em; line-height: 1.1;
+        background: linear-gradient(135deg, #ffffff 0%, #EE6F12 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .title-slide .subtitle {
+        font-size: clamp(0.85rem, 1.8vw, 1.3rem);
+        color: rgba(255,255,255,0.6); margin-top: var(--element-gap);
+        font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .title-slide .badge {
+        display: inline-block; margin-top: var(--content-gap);
+        padding: clamp(0.3rem, 0.6vw, 0.5rem) clamp(0.8rem, 1.5vw, 1.5rem);
+        border: 1px solid rgba(238,111,18,0.5); border-radius: 100px;
+        font-size: var(--small-size); color: #F07F2D;
+        background: rgba(238,111,18,0.12); font-weight: 600;
+    }
+    .title-slide p { color: rgba(255,255,255,0.65); }
+    .nav-btn {
+        display: inline-block; padding: 0.4rem 1.2rem; border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.7); text-decoration: none; font-size: var(--small-size);
+        transition: all 0.2s; font-weight: 500;
+    }
+    .nav-btn:hover { border-color: #EE6F12; color: #F07F2D; background: rgba(238,111,18,0.15); }
+    /* Section header */
+    .section-header {
+        font-size: var(--h2-size); font-weight: 800;
+        margin-bottom: clamp(0.4rem, 1.2vh, 1rem);
+        display: flex; align-items: center; gap: clamp(0.4rem, 0.8vw, 0.8rem);
+        color: var(--navy);
+    }
+    .section-icon {
+        width: clamp(1.8rem, 3vw, 2.8rem); height: clamp(1.8rem, 3vw, 2.8rem);
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-size: clamp(0.9rem, 1.5vw, 1.4rem); flex-shrink: 0;
+    }
+    /* Chart */
+    .chart-row {
+        display: flex; align-items: center; gap: clamp(0.3rem, 0.6vw, 0.6rem);
+        margin-bottom: clamp(0.15rem, 0.4vh, 0.35rem);
+    }
+    .chart-label {
+        font-size: var(--small-size); color: var(--text-primary);
+        width: clamp(140px, 30vw, 360px); flex-shrink: 0;
+        line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        font-weight: 500;
+    }
+    .chart-bar-container {
+        flex: 1; display: flex; height: clamp(18px, 2.8vh, 28px);
+        border-radius: 4px; overflow: hidden; background: rgba(0,51,85,0.07); min-width: 0;
+    }
+    .chart-segment {
+        display: flex; align-items: center; justify-content: center;
+        font-size: clamp(0.45rem, 0.7vw, 0.65rem); font-weight: 600;
+        color: rgba(0,0,0,0.75); transition: width 0.8s var(--ease-out-expo);
+        min-width: fit-content; overflow: visible; position: relative; z-index: 1;
+    }
+    .chart-segment span { white-space: nowrap; }
+    .seg-1 { background: var(--red); }
+    .seg-2 { background: var(--orange); }
+    .seg-3 { background: var(--yellow); }
+    .seg-4 { background: var(--green-light); }
+    .seg-5 { background: var(--green); }
+    .chart-meta {
+        width: clamp(80px, 10vw, 120px); flex-shrink: 0;
+        display: flex; gap: clamp(0.3rem, 0.5vw, 0.6rem);
+        align-items: center; justify-content: flex-end;
+    }
+    .chart-avg { font-size: var(--small-size); font-weight: 700; color: var(--navy); }
+    .chart-fav {
+        font-size: var(--small-size); font-weight: 600;
+        padding: 1px clamp(4px, 0.4vw, 8px); border-radius: 4px; white-space: nowrap;
+    }
+    .fav-high { background: rgba(22,163,74,0.1);   color: #16a34a; }
+    .fav-mid  { background: rgba(161,98,7,0.1);    color: #a16207; }
+    .fav-low  { background: rgba(220,38,38,0.1);   color: #dc2626; }
+    .chart-legend {
+        display: flex; gap: clamp(0.5rem, 1vw, 1.2rem);
+        margin-bottom: clamp(0.3rem, 0.8vh, 0.6rem);
+        font-size: var(--small-size); color: var(--text-secondary); align-items: center;
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: clamp(8px, 0.8vw, 12px); height: clamp(8px, 0.8vw, 12px); border-radius: 3px; flex-shrink: 0; }
+    /* Demographics */
+    .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+        gap: clamp(0.6rem, 1.2vw, 1.2rem); margin-top: var(--content-gap);
+    }
+    .demo-card {
+        background: #ffffff; border: 1px solid var(--border);
+        border-radius: 12px; padding: clamp(0.6rem, 1.2vw, 1.2rem);
+        box-shadow: 0 1px 4px rgba(0,51,85,0.06);
+    }
+    .demo-card h3 {
+        font-size: var(--small-size); text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--text-secondary);
+        margin-bottom: clamp(0.3rem, 0.6vh, 0.6rem); font-weight: 700;
+    }
+    .demo-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: clamp(0.15rem, 0.3vh, 0.3rem) 0; font-size: var(--body-size);
+        color: var(--text-primary);
+    }
+    .demo-item .value { font-weight: 800; font-family: var(--font-display); color: #EE6F12; }
+    .demo-bar { height: clamp(4px, 0.5vh, 6px); border-radius: 3px; background: #E2E8F0; margin-top: 2px; overflow: hidden; }
+    .demo-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #003355, #EE6F12); transition: width 1s var(--ease-out-expo); }
+    .big-number { font-size: clamp(2.5rem, 6vw, 5rem); font-family: var(--font-display); font-weight: 800; color: #EE6F12; line-height: 1; }
+    .big-label { font-size: var(--body-size); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    /* Highlights */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.8rem, 1.5vw, 1.5rem); margin-top: var(--content-gap); }
+    @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } }
+    .summary-col h3 { font-size: var(--h3-size); font-weight: 700; margin-bottom: clamp(0.3rem, 0.6vh, 0.6rem); display: flex; align-items: center; gap: 6px; color: var(--navy); }
+    .summary-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: clamp(0.25rem, 0.5vh, 0.45rem) clamp(0.4rem, 0.8vw, 0.8rem);
+        border-radius: 8px; margin-bottom: clamp(0.15rem, 0.3vh, 0.25rem);
+        font-size: var(--body-size); color: var(--text-primary);
+    }
+    .summary-item span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+    .summary-item .pct { font-weight: 800; font-family: var(--font-display); font-size: var(--h3-size); white-space: nowrap; margin-left: 10px; }
+    .strength    { background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.15); }
+    .strength    .pct { color: #16a34a; }
+    .opportunity { background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.12); }
+    .opportunity .pct { color: #dc2626; }
+    /* Backgrounds */
+    .slide-bg-gradient {
+        background:
+            radial-gradient(ellipse at 5% 90%, rgba(238,111,18,0.05) 0%, transparent 40%),
+            radial-gradient(ellipse at 95% 10%, rgba(0,51,85,0.04) 0%, transparent 40%),
+            #F4F6F9;
+    }
+    .slide-bg-alt {
+        background: #ffffff;
+    }
+    .slide::before {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        background-image: linear-gradient(rgba(0,51,85,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,51,85,0.025) 1px, transparent 1px);
+        background-size: 60px 60px;
+    }
+    .slide-number { position: absolute; bottom: clamp(0.5rem, 1vh, 1rem); right: clamp(0.8rem, 1.5vw, 1.5rem); font-size: var(--small-size); color: rgba(0,51,85,0.25); font-family: var(--font-display); font-weight: 600; }
+    .content-slide .slide-content { justify-content: flex-start; padding-top: clamp(1.5rem, 4vh, 3.5rem); }
+    /* Comment slides */
+    .comment-slide .slide-content { justify-content: flex-start; padding-top: clamp(1rem, 3vh, 2.5rem); }
+    .comments-scroll { flex: 1; overflow-y: auto; min-height: 0; margin-top: clamp(0.3rem, 0.6vh, 0.5rem); padding-right: clamp(0.3rem, 0.5vw, 0.5rem); scroll-behavior: smooth; }
+    .comments-scroll::-webkit-scrollbar { width: 4px; }
+    .comments-scroll::-webkit-scrollbar-track { background: transparent; }
+    .comments-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+    .comments-scroll::-webkit-scrollbar-thumb { background: rgba(0,51,85,0.15); border-radius: 4px; }
+    .comments-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0,51,85,0.25); }
+    .comment-item {
+        padding: clamp(0.4rem, 0.8vh, 0.7rem) clamp(0.5rem, 1vw, 0.8rem);
+        margin-bottom: clamp(0.2rem, 0.4vh, 0.35rem);
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--border);
+        border-radius: 0 8px 8px 0;
+        font-size: var(--body-size); line-height: 1.5; color: var(--text-primary);
+    }
+    .comment-item:hover { background: #FFF8F4; border-left-color: #EE6F12; border-color: rgba(238,111,18,0.2); }
+    /* Password overlay — Driva branded (dark overlay on light pages) */
+    .pw-overlay { position: fixed; inset: 0; background: rgba(0,31,60,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px; }
+    .pw-box {
+        background: #ffffff;
+        border: 1px solid #E2E8F0; border-radius: 20px; padding: 44px 36px;
+        max-width: 420px; width: 100%; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(238,111,18,0.1);
+    }
+    .pw-logo img { height: 38px; margin-bottom: 28px; }
+    .pw-title { font-size: 1.3rem; font-weight: 800; color: #0D2137; margin-bottom: 6px; font-family: var(--font-display); }
+    .pw-sub { font-size: 0.88rem; color: #4A6280; margin-bottom: 28px; line-height: 1.6; }
+    .pw-input { width: 100%; padding: 14px 18px; background: #F4F6F9; border: 1.5px solid #E2E8F0; border-radius: 10px; font-size: 1rem; outline: none; transition: border 0.2s, box-shadow 0.2s; text-align: center; letter-spacing: 0.08em; color: #0D2137; font-family: var(--font-body); }
+    .pw-input:focus { border-color: #EE6F12; box-shadow: 0 0 0 3px rgba(238,111,18,0.12); background: #fff; }
+    .pw-input::placeholder { color: #8B9BB4; letter-spacing: 0; }
+    .pw-btn { width: 100%; margin-top: 12px; padding: 14px; background: #EE6F12; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; font-family: var(--font-display); box-shadow: 0 4px 20px rgba(238,111,18,0.35); }
+    .pw-btn:hover { background: #F07F2D; box-shadow: 0 6px 24px rgba(238,111,18,0.5); }
+    .pw-error { color: #dc2626; font-size: 0.82rem; margin-top: 10px; display: none; }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="pw-overlay" id="pw-overlay"><div class="pw-box"><div class="pw-logo"><img src="logo_pos.png" alt="Driva"></div><div class="pw-title">Driva Pulse 2026.1</div><div class="pw-sub">Relatório de Clima &middot; <strong style="color:var(--text-primary)">Administrativo Financeiro</strong><br>Digite a senha para acessar</div><input class="pw-input" id="pw-input" type="password" placeholder="Senha de acesso" autocomplete="off"><button class="pw-btn" id="pw-btn">Acessar Relatório</button><div class="pw-error" id="pw-error">Senha incorreta. Tente novamente.</div></div></div>
+<script>(function(){var overlay=document.getElementById("pw-overlay");var inp=document.getElementById("pw-input");var err=document.getElementById("pw-error");var btn=document.getElementById("pw-btn");var SK="driva_pulse_Af7hashFn5h";if(sessionStorage.getItem(SK)==="ok"){overlay.style.display="none";return;}function tryPw(){if(inp.value==="Af7#Fn5h"){{overlay.style.display="none";sessionStorage.setItem(SK,"ok");}}else{err.style.display="block";inp.style.borderColor="#f87171";setTimeout(function(){err.style.display="none";inp.style.borderColor="rgba(255,255,255,0.15)";},2000);}}btn.addEventListener("click",tryPw);inp.addEventListener("keydown",function(e){if(e.key==="Enter")tryPw();});})();</script>
+<section class="slide title-slide"><div class="slide-content" style="align-items:center;"><p class="reveal badge">DRIVA PULSE 2026.1</p><h1 class="reveal" style="margin-top:var(--content-gap);">Administrativo Financeiro</h1><p class="reveal subtitle">Relatório de Clima Organizacional</p><p class="reveal" style="margin-top:var(--content-gap);font-size:var(--body-size);color:var(--text-secondary);">5/6 respondentes · 83% adesão</p><div class="reveal" style="margin-top:var(--content-gap);display:flex;gap:clamp(0.4rem,0.8vw,0.8rem);flex-wrap:wrap;justify-content:center;"><a href="index.html" class="nav-btn">← Home</a></div></div><span class="slide-number">01 / 11</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#6366f126;color:#6366f1;">❤️</span>Driva Pulse</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Tenho orgulho de trabalhar na Driva</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,20.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.40</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Recomendaria a Driva como lugar para trabalhar</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,0.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Pretendo ficar na Driva pelos próximos 12 meses</span><div class="chart-bar-container" data-dist="20.0,0.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.60</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Me sinto feliz na Driva</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,0.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Pertencimento positivo, com espaço para crescimento (fav. 65%). O item &quot;Recomendaria a Driva como lugar para trabalhar&quot; (60%) merece ação para fortalecer o vínculo com a empresa.</span></div></div><span class="slide-number">02 / 11</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#8b5cf626;color:#8b5cf6;">🤖</span>AI First</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Treinamentos para tarefas com IA/automações</span><div class="chart-bar-container" data-dist="20.0,0.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.60</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Liderança: incentivo para automação/IA</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,20.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.40</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Liderança: facilita aprendizado sobre IA</span><div class="chart-bar-container" data-dist="0.0,40.0,0.0,40.0,20.0"></div><div class="chart-meta"><span class="chart-avg">3.40</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Disponibilização de softwares/ferramentas de IA</span><div class="chart-bar-container" data-dist="0.0,20.0,0.0,40.0,40.0"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Impacto da IA na minha produtividade</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,0.0,80.0"></div><div class="chart-meta"><span class="chart-avg">4.60</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Adoção de IA em progresso (72%). Investimento em capacitação pode acelerar os resultados — &quot;Treinamentos para tarefas com IA/automações&quot; (60%) é o principal gap.</span></div></div><span class="slide-number">03 / 11</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#0ea5e926;color:#0ea5e9;">🤝</span>Joga Junto</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Satisfação com a quantidade de 1:1s</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,20.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.40</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com a qualidade dos 1:1s</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Tratamento igualitário (D&amp;I)</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,20.0,80.0"></div><div class="chart-meta"><span class="chart-avg">4.80</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Me sinto à vontade para tirar dúvidas com colegas</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,20.0,80.0"></div><div class="chart-meta"><span class="chart-avg">4.80</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Tenho os recursos/tecnologia necessários</span><div class="chart-bar-container" data-dist="0.0,0.0,40.0,0.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.20</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">O ambiente favorece minha produtividade</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,40.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.60</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(22,163,74,0.06);border-left:3px solid #16a34a;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#16a34a;margin-right:6px;">Ponto forte:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Ambiente colaborativo e inclusivo com 83% de favorabilidade. Colaboração, D&amp;I e recursos disponíveis são pontos fortes consolidados.</span></div></div><span class="slide-number">04 / 11</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#10b98126;color:#10b981;">🌱</span>Gente Boa e Crescimento</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Entendo os critérios para progressão de cargo</span><div class="chart-bar-container" data-dist="20.0,40.0,0.0,0.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.00</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Vejo oportunidade de crescimento na Driva</span><div class="chart-bar-container" data-dist="20.0,0.0,0.0,20.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Evoluí como profissional desde que entrei</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,0.0,100.0"></div><div class="chart-meta"><span class="chart-avg">5.00</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com os benefícios</span><div class="chart-bar-container" data-dist="20.0,0.0,40.0,20.0,20.0"></div><div class="chart-meta"><span class="chart-avg">3.20</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Consigo entregar tarefas no tempo previsto</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,40.0,20.0"></div><div class="chart-meta"><span class="chart-avg">3.60</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Equilibro bem trabalho e vida pessoal</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,40.0,40.0"></div><div class="chart-meta"><span class="chart-avg">4.20</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Desenvolvimento percebido positivamente no geral (67%), mas &quot;Entendo os critérios para progressão de cargo&quot; (40%) indica que critérios de progressão e benefícios podem ser mais claros.</span></div></div><span class="slide-number">05 / 11</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#f59e0b26;color:#f59e0b;">💬</span>Fale a Verdade</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Confiança para expor minhas ideias</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,40.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.60</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de liderar do meu líder</span><div class="chart-bar-container" data-dist="0.0,0.0,20.0,20.0,60.0"></div><div class="chart-meta"><span class="chart-avg">4.40</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Comunicação da liderança direta</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Visão estratégica da liderança</span><div class="chart-bar-container" data-dist="0.0,0.0,40.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">4.00</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de motivar o time</span><div class="chart-bar-container" data-dist="20.0,0.0,40.0,0.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.40</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Capacidade de ensinar e guiar</span><div class="chart-bar-container" data-dist="20.0,0.0,0.0,40.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-high">80.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Minha liderança reconhece minhas contribuições</span><div class="chart-bar-container" data-dist="0.0,0.0,60.0,0.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Segurança psicológica presente (66%), com margem de melhoria. &quot;Capacidade de motivar o time&quot; (40%) indica espaço para fortalecer qualidade da liderança e comunicação.</span></div></div><span class="slide-number">06 / 11</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#ef444426;color:#ef4444;">✍️</span>Assine Embaixo</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Sou reconhecido pelo meu trabalho</span><div class="chart-bar-container" data-dist="20.0,0.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.60</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Satisfação com a remuneração total</span><div class="chart-bar-container" data-dist="20.0,0.0,40.0,20.0,20.0"></div><div class="chart-meta"><span class="chart-avg">3.20</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Entendo bem os produtos da Driva</span><div class="chart-bar-container" data-dist="0.0,0.0,40.0,40.0,20.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Enxergo a importância das minhas atividades para o negócio</span><div class="chart-bar-container" data-dist="0.0,0.0,0.0,0.0,100.0"></div><div class="chart-meta"><span class="chart-avg">5.00</span><span class="chart-fav fav-high">100.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(238,111,18,0.06);border-left:3px solid #EE6F12;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#EE6F12;margin-right:6px;">Atenção:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Reconhecimento moderado (65%). &quot;Satisfação com a remuneração total&quot; (40%) aponta que remuneração e valorização profissional são alavancas de melhoria.</span></div></div><span class="slide-number">07 / 11</span></section>
+<section class="slide content-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal"><span class="section-icon" style="background:#f9731626;color:#f97316;">📈</span>Mova o Ponteiro</div><div class="chart-legend reveal">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>1</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span>2</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span>3</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green-light)"></span>4</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>5</span>
+    <span style="margin-left:auto;color:var(--text-secondary);">Média · Fav.</span>
+</div><div class="chart-row reveal"><span class="chart-label">Treinamento de onboarding</span><div class="chart-bar-container" data-dist="20.0,40.0,0.0,20.0,20.0"></div><div class="chart-meta"><span class="chart-avg">2.80</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Treinamento ongoing (tarefas diárias)</span><div class="chart-bar-container" data-dist="20.0,40.0,0.0,20.0,20.0"></div><div class="chart-meta"><span class="chart-avg">2.80</span><span class="chart-fav fav-low">40.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Treinamentos que contribuem para desenvolvimento profissional</span><div class="chart-bar-container" data-dist="20.0,20.0,0.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.40</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="chart-row reveal"><span class="chart-label">Recebo informações sobre mudanças que impactam meu trabalho</span><div class="chart-bar-container" data-dist="0.0,20.0,20.0,20.0,40.0"></div><div class="chart-meta"><span class="chart-avg">3.80</span><span class="chart-fav fav-mid">60.0%</span></div></div>
+<div class="reveal" style="margin-top:clamp(0.3rem,0.7vh,0.7rem);padding:clamp(0.35rem,0.7vh,0.6rem) clamp(0.6rem,1vw,1rem);background:rgba(220,38,38,0.05);border-left:3px solid #dc2626;border-radius:0 8px 8px 0;"><span style="font-size:var(--small-size);font-weight:700;color:#dc2626;margin-right:6px;">Ponto crítico:</span><span style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5;">Baixa clareza sobre produtos e impacto (50%). Comunicação interna, treinamentos e alinhamento estratégico precisam de atenção.</span></div></div><span class="slide-number">08 / 11</span></section>
+<section class="slide content-slide slide-bg-alt"><div class="slide-content"><div class="summary-grid"><div class="summary-col"><h3 class="reveal">✅ Maiores Favorabilidades</h3><div class="summary-item strength reveal"><span>Tratamento igualitário (D&amp;I)</span><span class="pct">100.0%</span></div><div class="summary-item strength reveal"><span>Me sinto à vontade para tirar dúvidas com colegas</span><span class="pct">100.0%</span></div><div class="summary-item strength reveal"><span>O ambiente favorece minha produtividade</span><span class="pct">100.0%</span></div><div class="summary-item strength reveal"><span>Evoluí como profissional desde que entrei</span><span class="pct">100.0%</span></div><div class="summary-item strength reveal"><span>Confiança para expor minhas ideias</span><span class="pct">100.0%</span></div></div><div class="summary-col"><h3 class="reveal">⚠️ Menores Favorabilidades</h3><div class="summary-item opportunity reveal"><span>Entendo os critérios para progressão de cargo</span><span class="pct">40.0%</span></div><div class="summary-item opportunity reveal"><span>Satisfação com os benefícios</span><span class="pct">40.0%</span></div><div class="summary-item opportunity reveal"><span>Capacidade de motivar o time</span><span class="pct">40.0%</span></div><div class="summary-item opportunity reveal"><span>Minha liderança reconhece minhas contribuições</span><span class="pct">40.0%</span></div><div class="summary-item opportunity reveal"><span>Satisfação com a remuneração total</span><span class="pct">40.0%</span></div></div></div></div><span class="slide-number">09 / 11</span></section>
+<section class="slide comment-slide slide-bg-alt"><div class="slide-content"><div class="section-header reveal" style="margin-bottom:var(--content-gap);"><span class="section-icon" style="background:#22c55e26;color:#22c55e;">💚</span>O que mais gostamos</div><div class="comments-scroll reveal"><div class="comment-item" style="border-left-color:#22c55e;">Ambiente com pessoas que inspiram e fazem o trabalho motivadas.</div><div class="comment-item" style="border-left-color:#22c55e;">Aprendo muito</div><div class="comment-item" style="border-left-color:#22c55e;">Trabalhar com pessoas talentosas, possibilidade de crescimento e poder atuar em vários temas.</div><div class="comment-item" style="border-left-color:#22c55e;">Reconhecimento do trabalho e oportunidade de crescimento</div><div class="comment-item" style="border-left-color:#22c55e;">São dois fatores principais: as pessoas e a cultura de inovação, ilustrada pelo IA First. Esses dois aspectos me fazem crescer muito como profissional.</div></div></div><span class="slide-number">10 / 11</span></section>
+<section class="slide comment-slide slide-bg-gradient"><div class="slide-content"><div class="section-header reveal" style="margin-bottom:var(--content-gap);"><span class="section-icon" style="background:#f9731626;color:#f97316;">🔧</span>O que pode melhorar</div><div class="comments-scroll reveal"><div class="comment-item" style="border-left-color:#f97316;">Eu ter mais conhecimento de programação/ como as ferramentas de programação funcionam</div><div class="comment-item" style="border-left-color:#f97316;">Um plano de carreira bem estabelecido</div><div class="comment-item" style="border-left-color:#f97316;">Hoje tem duas coisas que me preocupam muito na Driva:
+1. Nosso estágio de desenvolvimento de solução: Nossa entrega de produto está muito distante da ambição de crescimento. Tenho a sensação de estarmos com os mesmos problemas a muito tempo e temos metas de crescimento consideráveis e as duas coisas não estão casadas. Um produto de qualidade melhora o trabalho de todas as áreas da empresa (CS pode ser CS), vendas pode vender com mais tranquilidade, a percepção do mercado melhora.
+2. Remuneração e Seniorização dos times: nossos salários não são competitivos e contratamos muita gente júnior. Por mais que tenhamos evoluído, ainda há um gap gigante nas áreas. Também perdemos pessoas boas para outras empresas que não necessariamente pagam bem, mas já é melhor que o que oferecemos.</div><div class="comment-item" style="border-left-color:#f97316;">Seguir avançando na automação dos processos internos, buscando otimizar o dia a dia das áreas, reduzir atividades manuais e ganhar mais eficiência operacional.</div><div class="comment-item" style="border-left-color:#f97316;">Mais oportunidades de trocas diretas com os diretores.</div></div></div><span class="slide-number">11 / 11</span></section>
+<script>
+    class SlidePresentation {
+        constructor() {
+            this.slides = document.querySelectorAll('.slide');
+            this.currentSlide = 0;
+            this.setupIntersectionObserver();
+            this.setupKeyboardNav();
+            this.setupTouchNav();
+            this.setupProgressBar();
+            this.setupNavDots();
+            this.renderCharts();
+        }
+        setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        this.currentSlide = Array.from(this.slides).indexOf(entry.target);
+                        this.updateProgressBar();
+                        this.updateNavDots();
+                    }
+                });
+            }, { threshold: 0.4 });
+            this.slides.forEach(s => observer.observe(s));
+        }
+        setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                const inScroll = e.target.closest('.comments-scroll');
+                if (inScroll && ['ArrowDown','ArrowUp','Space'].includes(e.code)) return;
+                if (['ArrowDown','ArrowRight','Space','PageDown'].includes(e.code)) {
+                    e.preventDefault();
+                    this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                } else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.code)) {
+                    e.preventDefault();
+                    this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                }
+            });
+        }
+        setupTouchNav() {
+            let startY = 0;
+            document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+            document.addEventListener('touchend', e => {
+                const dy = startY - e.changedTouches[0].clientY;
+                if (e.target.closest('.comments-scroll')) return;
+                if (Math.abs(dy) > 50) {
+                    if (dy > 0) this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                    else this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                }
+            }, { passive: true });
+        }
+        setupProgressBar() {
+            this.progressBar = document.getElementById('progressBar');
+            this.updateProgressBar();
+        }
+        updateProgressBar() {
+            if (this.progressBar)
+                this.progressBar.style.width = ((this.currentSlide + 1) / this.slides.length * 100) + '%';
+        }
+        setupNavDots() {
+            const nav = document.getElementById('navDots');
+            if (!nav) return;
+            this.slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Slide ' + (i+1));
+                dot.addEventListener('click', () => this.goToSlide(i));
+                nav.appendChild(dot);
+            });
+            this.dots = nav.querySelectorAll('.nav-dot');
+        }
+        updateNavDots() {
+            if (this.dots)
+                this.dots.forEach((d, i) => d.classList.toggle('active', i === this.currentSlide));
+        }
+        goToSlide(idx) { this.slides[idx].scrollIntoView({ behavior: 'smooth' }); }
+        renderCharts() {
+            document.querySelectorAll('.chart-bar-container').forEach(container => {
+                const dist = container.dataset.dist;
+                if (!dist) return;
+                const vals = dist.split(',').map(Number);
+                const colors = ['seg-1','seg-2','seg-3','seg-4','seg-5'];
+                vals.forEach((pct, i) => {
+                    if (pct > 0) {
+                        const seg = document.createElement('div');
+                        seg.className = 'chart-segment ' + colors[i];
+                        seg.style.width = pct + '%';
+                        if (pct > 0) seg.innerHTML = '<span>' + Math.round(pct) + '%</span>';
+                        container.appendChild(seg);
+                    }
+                });
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.chart-segment').forEach(seg => {
+                    const w = seg.style.width;
+                    seg.style.width = '0%';
+                    requestAnimationFrame(() => { requestAnimationFrame(() => { seg.style.width = w; }); });
+                });
+            }, 100);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+    document.querySelectorAll('.comments-scroll').forEach(el => {
+        el.addEventListener('wheel', e => {
+            const atTop = el.scrollTop === 0;
+            const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+            if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) return;
+            e.stopPropagation();
+        }, { passive: false });
+    });
+</script>
+</body>
+</html>
